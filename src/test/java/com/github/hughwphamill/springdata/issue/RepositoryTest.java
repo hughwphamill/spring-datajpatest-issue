@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
@@ -48,6 +50,21 @@ public class RepositoryTest {
 
     @Test
     public void unmanaged_bar_cannot_be_saved_through_foo() throws Exception {
+        // Given
+        final Foo foo = new Foo("name");
+        final Bar bar = new Bar("description");
+
+        // When
+        foo.addBar(bar);
+        final int fooId = fooRepository.save(foo).getId();
+        final List<Bar> allBars = barRepository.findAll();
+
+        // Then
+        assertThat(allBars).isEmpty();
+    }
+
+    @Test
+    public void unmanaged_bar_cannot_be_retrieved_through_foo() throws Exception {
         // Given
         final Foo foo = new Foo("name");
         final Bar bar = new Bar("description");
